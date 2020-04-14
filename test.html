@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>cookie、localStorage、sessionStorage</title>
+	</head>
+	<body>
+		<span id="time"></span>
+	</body>
+	<script type="text/javascript" src="jquery-1.4.4.min.js"></script>
+	<script type="text/javascript">
+		//localStorage
+		var user = localStorage.setItem('user', 'zhangsan');
+		var name = localStorage.getItem('user');
+		console.log(name);
+		//sessionStorage
+		var age = sessionStorage.setItem('age', 12);
+		var old = sessionStorage.getItem('age');
+		console.log(old);
+		//cookie
+		function setCookie(cname, cvalue, exdays) {
+			var d = new Date();
+			d.setTime(d.getTime() + (exdays * 60 * 1000)); //5分钟之后的时间戳
+			var expires = "expires=" + d.toGMTString();
+			document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+		}
+		//取
+		function getCookie(c_name) {
+			if (document.cookie.length > 0) {
+				c_start = document.cookie.indexOf(c_name + "=");
+				if (c_start != -1) {
+					c_start = c_start + c_name.length + 1;
+					c_end = document.cookie.indexOf(";", c_start);
+					if (c_end == -1) c_end = document.cookie.length;;
+					return unescape(document.cookie.substring(c_start, c_end))
+				}
+			}
+			return ""
+		}
+		//清除cookie
+		function clearCookie(name) {
+			setCookie(name, "", -1);
+		}
+
+
+		var end = getCookie('now_time');
+		var tody = new Date();
+		tody = tody.getTime();
+		r = end - tody;
+		var maxtime;
+		if (end == undefined || end == "") {
+			maxtime = 5 * 60;
+			setCookie('now_time', tody + 5 * 60 * 1000, 5);
+		} else {
+			maxtime = parseInt(r / 1000);
+		}
+
+		function move() {
+			if (maxtime >= 0) {
+				minutes = Math.floor(maxtime / 60);
+				seconds = Math.floor(maxtime % 60);
+				if (seconds < 10) {
+					$("#time").text("0" + minutes + ":" + "0" + seconds)
+				} else {
+					$("#time").text("0" + minutes + ":" + seconds)
+				}
+
+				--maxtime
+			} else {
+				clearInterval(st);
+				alert("时间到");
+			}
+		}
+		var st = setInterval("move()", 1000)
+	</script>
+</html>
